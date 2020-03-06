@@ -1,0 +1,47 @@
+class Automat:
+
+    def citire(self):
+        with open("automat.in") as f:
+            self.stari=f.readline().split()
+            self.sin=f.readline()
+            self.sin=(self.sin).replace("\n","")
+            self.sfin=f.readline().split()
+            self.tranzitii={}
+            for i in self.stari:
+                self.tranzitii[i]={}
+            x=f.readline()
+            while x:
+                x=x.split()
+                self.tranzitii[x[0]][x[1]]=x[2]
+                x=f.readline()
+                
+    def afisare(self):
+        print(self.stari)
+        print(self.sin)
+        print(self.sfin)
+        print(self.tranzitii)
+        
+    def verificare(self,cuvant):
+        s=self.sin
+        ok=1
+        for i in cuvant:
+            if i in self.tranzitii[s].keys():
+                s=self.tranzitii[s][i]
+            else:
+                ok=0
+        if (s in self.sfin) and ok==1:
+            print("Cuvant acceptat")
+        else:
+            print("Cuvantul nu e acceptat")
+            
+        
+
+aut=Automat()
+aut.citire()
+with open("cuvinte.in") as g:
+    cuv=g.readline()
+    while cuv:
+        cuv=cuv.replace("\n","")
+        print(cuv,end=" - ")
+        aut.verificare(cuv)
+        cuv=g.readline()
