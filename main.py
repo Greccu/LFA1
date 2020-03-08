@@ -24,27 +24,34 @@ def search(lista, nume):
         return "eroare"
 
 
-def selftranzitie(x,y,directie,nume,win):
+def selftranzitie(nod,nume,win):
+    x=nod.x
+    y=nod.y
+    if x<250:
+        directie="left"
+    elif x>550:
+        directie="right"
+    elif y<=250:
+        directie="up"
+    else:
+        directie="down"
     if directie=="left":
-        x-=45
+        x-=70
         c=Circle(Point(x+20,y),2)
-        c.setFill('pink')
-        c.setOutline('pink')
+
     if directie=="right":
-        x+=45
+        x+=70
         c=Circle(Point(x-20,y),2)
-        c.setFill('pink')
-        c.setOutline('pink')
+
     if directie=="up":
-        y-=45
+        y-=70
         c=Circle(Point(x,y+20),2)
-        c.setFill('pink')
-        c.setOutline('pink')
+
     if directie=="down":
-        y+=45
+        y+=70
         c=Circle(Point(x,y-20),2)
-        c.setFill('pink')
-        c.setOutline('pink')
+    c.setFill('pink')
+    c.setOutline('pink')
     cir=Circle(Point(x,y),20)
     cir.setOutline('pink')
     cir.setWidth(2)
@@ -55,49 +62,58 @@ def selftranzitie(x,y,directie,nume,win):
     text.setTextColor('pink')
     text.draw(win)
 
-def tranzitie(x1,y1,x2,y2,nume,win):
+def tranzitie(nod1,nod2,nume,win):
+    x1=nod1.x
+    y1=nod1.x
+    x2=nod2.x
+    y2=nod2.y
     if x1>x2:
-        x2+=25
-        x1-=25
+        x2+=50
+        x1-=50
     else:
-        x1+=25
-        x2-=25
+        x1+=50
+        x2-=50
     if y1>y2:
-        y2+=25
-        x1-=25
+        y2+=50
+        x1-=50
     else:
-        y1+=25
-        y2-=25
+        y1+=50
+        y2-=50
     ln=Line(Point(x1,y1),Point(x2,y2))
     ln.setArrow("last")
     ln.setWidth(2)
+    ln.setFill('yellow')
+    x=(3*x1+x2)//4
+    y=(3*y1+y2)//4
+    pt = Point(x,y)
     if x1>x2 or y1<y2:
         ln.setFill('aqua')
-        pt = ln.getCenter()
-        if x1!=x2:
-            pt.y-=10
-        if y1!=y2:
-            pt.x-=10
-        tx = Text(pt, nume)
-        tx.setTextColor('aqua')
-        tx.setSize(10)
+
     else:
         ln.setFill('red')
-        pt = ln.getCenter()
-        if x1!=x2:
-            pt.y+=10
-        if y1!=y2:
-            pt.x+=10
-        tx = Text(pt, nume)
-        tx.setTextColor('red')
-        tx.setSize(10)
+    tx = Text(pt, nume)
+    tx.setTextColor('yellow')
+    tx.setSize(10)
     ln.draw(win)
     tx.draw(win)
 
-#def stare(x,y,text,final):
-
-
-
+def stare(nod,final,win):
+    x=nod.x
+    y=nod.y
+    text=nod.nume
+    cir=Circle(Point(x,y),50)
+    cir.setOutline('white')
+    cir.setWidth(2)
+    cir.draw(win)
+    if final==1:
+        cir2=Circle(Point(x,y),40)
+        cir2.setOutline('white')
+        cir2.setWidth(2)
+        cir2.draw(win)
+    tx=Text(Point(x,y),text)
+    tx.setSize(10)
+    tx.setTextColor('white')
+    tx.draw(win)
 
 
 class Automat:
@@ -151,36 +167,46 @@ class Automat:
     def afisare_grafica(self):
         win = GraphWin("Automat", 1600, 800)
         win.setBackground('black')
-        ok=1
+        #determinare coordonate noduri
         for i in self.stari:
-            if len(self.tranzitii[i].keys())>3:
-                ok=1
-        if ok==0:
-            txt=Text(Point(800,350),"Afisarea automatului nu s-a realizat")
-            txt.setTextColor('red')
-            txt.setSize(30)
-            txt.draw(win)
-        else:
-            x = 200
-            y = 400
-            s = aut.sin
-            nodviz = {}
-            for i in aut.stari:
-                nodviz[i] = 0
-            #while True:
-            tranzitie(x,y,x+100,y+100,"da",win)
-            selftranzitie(x-100,y-100,"up","nu",win)
-
-
-
-
+            if i in self.sfin:
+                stare(i,1,win)
+            else:
+                stare(i,0,win)
+            for j in self.tranzitii[i].keys():
+                if i==tranzitii[i][j]:
+                    selftranzitie(nod,j,win)
+                else:
+                    tranzitie(i,self.tranzitii[i][j],j,win)
 
 
         #####################################
         #####################################
-        input_box = Entry(Point(800, 700), 20)
+
+
+        input_box = Entry(Point(1200, 400), 30)
         input_box.draw(win)
-        output = Text(Point(800, 750), "da")
+        output = Text(Point(1200, 350), "da")
+        output.setSize(25)
+        ln=Line(Point(800,0),Point(800,800))
+        ln.setWidth(3)
+        ln.setFill('white')
+        ln.setOutline('white')
+        ln.draw(win)
+        """
+        cir=Circle(Point(400,400),300)
+        cir2=Circle(Point(700,400),50)
+        cir2.setWidth(2)
+        cir2.setOutline('white')
+        cir2.draw(win)
+        cir2 = Circle(Point(770, 400), 20)
+        cir2.setWidth(2)
+        cir2.setOutline('white')
+        cir2.draw(win)
+        cir.setOutline('white')
+        cir.setWidth(2)
+        cir.draw(win)
+        """
         if aut.verificare("")==1:
             output.setTextColor('lime')
         else:
@@ -197,7 +223,11 @@ class Automat:
         win.getMouse()  # Pause to view result
         win.close()  # Close window when done
 
+        #####################################
+        #####################################
 
+
+####MAIN####
 aut = Automat()
 aut.citire()
 with open("cuvinte.in") as g:
