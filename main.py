@@ -64,9 +64,10 @@ def selftranzitie(nod,nume,win):
 
 def tranzitie(nod1,nod2,nume,win):
     x1=nod1.x
-    y1=nod1.x
+    y1=nod1.y
     x2=nod2.x
     y2=nod2.y
+    """
     if x1>x2:
         x2+=50
         x1-=50
@@ -75,14 +76,14 @@ def tranzitie(nod1,nod2,nume,win):
         x2-=50
     if y1>y2:
         y2+=50
-        x1-=50
+        y1-=50
     else:
         y1+=50
         y2-=50
+    """
     ln=Line(Point(x1,y1),Point(x2,y2))
     ln.setArrow("last")
     ln.setWidth(2)
-    ln.setFill('yellow')
     x=(3*x1+x2)//4
     y=(3*y1+y2)//4
     pt = Point(x,y)
@@ -90,10 +91,10 @@ def tranzitie(nod1,nod2,nume,win):
         ln.setFill('aqua')
 
     else:
-        ln.setFill('red')
+        ln.setFill('yellow')
     tx = Text(pt, nume)
-    tx.setTextColor('yellow')
-    tx.setSize(10)
+    tx.setTextColor('red')
+    tx.setSize(20)
     ln.draw(win)
     tx.draw(win)
 
@@ -167,18 +168,55 @@ class Automat:
     def afisare_grafica(self):
         win = GraphWin("Automat", 1600, 800)
         win.setBackground('black')
+        ##############################
         #determinare coordonate noduri
+        ##############################
+
+        i=0
+        self.stari[0].x=100
+        self.stari[0].y=400
+
+        #stare(self.stari[0],1,win)
+
+        n=len(self.stari)
+        l=1200//n
+        print(100,400)
+        sx=sy=1
+        for i in range(1,n):
+            x0=self.stari[i-1].x
+            y0=self.stari[i-1].y
+            x1=x0+sx*l
+            y1=y0+sy*l
+            if x1<=100:
+                if x1<100:
+                    x1=200-x1
+                sx*=-1
+            if y1<=100:
+                if y1<100:
+                    y1=200-y1
+                sx*=-1
+            if x1>=700:
+                if x1>700:
+                    x1= 1400-x1
+                sx*=-1
+            if y1>=700:
+                if y1>700:
+                    y1= 1400-y1
+                sy*=-1
+            print(x1,y1)
+            self.stari[i].x=x1
+            self.stari[i].y=y1
+
         for i in self.stari:
             if i in self.sfin:
                 stare(i,1,win)
             else:
                 stare(i,0,win)
             for j in self.tranzitii[i].keys():
-                if i==tranzitii[i][j]:
-                    selftranzitie(nod,j,win)
+                if i==self.tranzitii[i][j]:
+                    selftranzitie(i,j,win)
                 else:
                     tranzitie(i,self.tranzitii[i][j],j,win)
-
 
         #####################################
         #####################################
@@ -193,8 +231,8 @@ class Automat:
         ln.setFill('white')
         ln.setOutline('white')
         ln.draw(win)
-        """
         cir=Circle(Point(400,400),300)
+        """
         cir2=Circle(Point(700,400),50)
         cir2.setWidth(2)
         cir2.setOutline('white')
