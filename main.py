@@ -1,4 +1,5 @@
 from graphics import *
+from math import *
 
 
 class Stare:
@@ -68,6 +69,7 @@ def tranzitie(nod1,nod2,nume,win):
     x2=nod2.x
     y2=nod2.y
     """
+    #Ajustare muchie
     if x1>x2:
         x2+=50
         x1-=50
@@ -83,7 +85,7 @@ def tranzitie(nod1,nod2,nume,win):
     """
     ln=Line(Point(x1,y1),Point(x2,y2))
     ln.setArrow("last")
-    ln.setWidth(2)
+    ln.setWidth(3)
     x=(3*x1+x2)//4
     y=(3*y1+y2)//4
     pt = Point(x,y)
@@ -112,7 +114,7 @@ def stare(nod,final,win):
         cir2.setWidth(2)
         cir2.draw(win)
     tx=Text(Point(x,y),text)
-    tx.setSize(10)
+    tx.setSize(20)
     tx.setTextColor('white')
     tx.draw(win)
 
@@ -162,8 +164,10 @@ class Automat:
                 ok = 0
         if (s in self.sfin) and ok == 1:
             return 1
-        else:
+        elif ok==0:
             return 0
+        else:
+            return -1
 
     def afisare_grafica(self):
         win = GraphWin("Automat", 1600, 800)
@@ -171,7 +175,8 @@ class Automat:
         ##############################
         #determinare coordonate noduri
         ##############################
-
+        """
+        #mod1 - nu prea bun :)))
         i=0
         self.stari[0].x=100
         self.stari[0].y=400
@@ -206,6 +211,19 @@ class Automat:
             print(x1,y1)
             self.stari[i].x=x1
             self.stari[i].y=y1
+        """
+
+        #mod2 - sa speram ca merge mai bine
+        n=len(self.stari)
+        alpha=2*pi/n
+        print(alpha)
+        r=300  #raza
+        for i in range(n):
+            x=r*sin(i*alpha)
+            y=r*cos(i*alpha)
+            self.stari[i].x=x+400
+            self.stari[i].y=y+400
+            print(x,y)
 
         for i in self.stari:
             if i in self.sfin:
@@ -255,8 +273,11 @@ class Automat:
             if aut.verificare(cuv) == 1:
                 output.setText("Cuvant acceptat")
                 output.setTextColor('lime')
+            elif aut.verificare(cuv) == 0:
+                output.setText("Cuvant respins (nu exista un drum posibil)")
+                output.setTextColor('red')
             else:
-                output.setText("Cuvant respins")
+                output.setText("Cuvant respins (nodul in care s-a oprit nu e stare finala)")
                 output.setTextColor('red')
         win.getMouse()  # Pause to view result
         win.close()  # Close window when done
@@ -275,8 +296,11 @@ with open("cuvinte.in") as g:
         print(cuv, end=" - ")
         if aut.verificare(cuv)==1:
             print("Cuvant acceptat")
+        elif aut.verificare(cuv) == 0:
+            print("Cuvant respins (nu exista un drum posibil)")
         else:
-            print("Cuvant respins")
+            print("Cuvant respins (nodul in care s-a oprit nu e stare finala)")
+
         cuv = g.readline()
 
 ######################
