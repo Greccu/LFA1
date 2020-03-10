@@ -113,9 +113,15 @@ def stare(nod,final,win):
         cir2.setOutline('white')
         cir2.setWidth(2)
         cir2.draw(win)
+    elif final==-1:
+        ln=Line(Point(x,y+100),Point(x,y+50))
+        ln.setArrow("last")
+        ln.setWidth(3)
+        ln.setOutline('green')
+        ln.draw(win)
     tx=Text(Point(x,y),text)
     tx.setSize(20)
-    tx.setTextColor('white')
+    tx.setTextColor('red')
     tx.draw(win)
 
 
@@ -216,18 +222,21 @@ class Automat:
         #mod2 - sa speram ca merge mai bine
         n=len(self.stari)
         alpha=2*pi/n
-        print(alpha)
+        #print(alpha)
         r=300  #raza
         for i in range(n):
             x=r*sin(i*alpha)
             y=r*cos(i*alpha)
             self.stari[i].x=x+400
             self.stari[i].y=y+400
-            print(x,y)
-
+            #print(x,y)
+        print(stare(self.sin,-1,win))
         for i in self.stari:
             if i in self.sfin:
                 stare(i,1,win)
+            elif i==self.sin:
+                print("da")
+                stare(i,-1,win)
             else:
                 stare(i,0,win)
             for j in self.tranzitii[i].keys():
